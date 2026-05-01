@@ -189,11 +189,26 @@
                     <p class="section-desc">浏览和管理历史对话</p>
                 </div>
                 <div class="card" style="margin-bottom: 16px;">
-                    <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
-                        <button class="btn btn-primary" onclick="exportConversations()">📥 导出全部对话</button>
-                        <button class="btn" onclick="document.getElementById('conv-import-file').click()">📤 导入对话记录</button>
-                        <input type="file" id="conv-import-file" accept=".json" style="display:none" onchange="importConversations(event)">
-                        <span id="conv-import-status" style="font-size: 13px; color: var(--text-muted);"></span>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                        <h4>📥 导出</h4>
+                        <button class="btn btn-primary" onclick="exportConversations()">下载对话记录</button>
+                    </div>
+                    <div style="border-top: 1px solid var(--border); padding-top: 16px;">
+                        <h4 style="margin-bottom: 12px;">📤 导入对话记录</h4>
+                        <div style="margin-bottom: 12px;">
+                            <label style="font-size: 13px; color: var(--text-muted); display: block; margin-bottom: 6px;">上传 .json 文件</label>
+                            <input type="file" id="conv-import-file" accept=".json" style="font-size: 13px;">
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 12px; margin: 12px 0; color: var(--text-muted); font-size: 13px;">
+                            <div style="flex: 1; border-top: 1px solid var(--border);"></div>
+                            <span>或者直接粘贴</span>
+                            <div style="flex: 1; border-top: 1px solid var(--border);"></div>
+                        </div>
+                        <textarea id="conv-import-text" rows="4" placeholder="粘贴导出的对话记录 JSON" style="width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; resize: vertical; background: var(--bg); color: var(--text);"></textarea>
+                        <div style="margin-top: 12px; display: flex; align-items: center; gap: 12px;">
+                            <button class="btn btn-primary" onclick="doConvImport()">导入对话记录</button>
+                            <span id="conv-import-status" style="font-size: 13px; color: var(--text-muted);"></span>
+                        </div>
                     </div>
                 </div>
                 <div class="card">
