@@ -73,16 +73,6 @@ def get_active_session_id() -> str:
 # 时区偏移（小时），用于记忆注入时的日期显示，默认 UTC+8
 TIMEZONE_HOURS = int(os.getenv("TIMEZONE_HOURS", "8"))
 
-# 平台专用格式指令（由 X-Platform header 触发，注入到当前user消息中）
-PLATFORM_FORMAT_INSTRUCTIONS = {
-    "wechat": """【回复格式】
-请保持自然、流畅的表达和正常标点。
-当回复较长时，
-可以在自然停顿、语义完整的位置使用 [NEXT] 分段。
-不要把一句完整的话拆成多个气泡，
-但也不要长内容全部挤在同一个气泡里。""",
-}
-
 # 轮次计数器
 _round_counter = 0
 
