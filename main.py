@@ -76,8 +76,9 @@ TIMEZONE_HOURS = int(os.getenv("TIMEZONE_HOURS", "8"))
 # 平台专用格式指令（由 X-Platform header 触发，注入到当前user消息中）
 PLATFORM_FORMAT_INSTRUCTIONS = {
     "wechat": """【回复格式】
-段和段之间，用 [NEXT] 分隔。不要在同一条消息内用换行放多个段落小节。
-这样每个短句和动作都会作为独立的消息气泡发出，中间有自然的停顿。""",
+内容较长或话题切换时可以用 [NEXT] 分段，
+但避免把一句完整的话拆成多个气泡。
+保持自然、流畅的表达。""",
 }
 
 # 轮次计数器
