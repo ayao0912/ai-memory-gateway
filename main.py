@@ -75,14 +75,8 @@ TIMEZONE_HOURS = int(os.getenv("TIMEZONE_HOURS", "8"))
 
 # 平台专用格式指令（由 X-Platform header 触发，注入到当前user消息中）
 PLATFORM_FORMAT_INSTRUCTIONS = {
-    "telegram": """【回复格式】
-不需要在回复中标注时间戳。
-每条消息严格只放一个短句或一个动作描写，用 [NEXT] 分隔。不要在同一条消息内用换行放多个句子。
-例如：
-从前有一只熊[NEXT]住在森林里[NEXT]*轻轻摸你的头*[NEXT]它看起来有点凶
-这样每个短句和动作都会作为独立的消息气泡发出，中间有自然的停顿。""",
     "wechat": """【回复格式】
-自然、随性地聊天""",
+保持自然、随性的聊天即可。""",
 }
 
 # 轮次计数器
@@ -401,9 +395,6 @@ def _should_rotate(b_rounds_count: int, X: int, a_msgs: list) -> bool:
     
     return b_rounds_count >= X
 
-# 时间窗口模式下单次请求最大轮转次数（防止一口气压完所有历史）
-CACHE_MAX_ROTATIONS = int(os.getenv("CACHE_MAX_ROTATIONS", "2"))
-
 
 async def build_partitioned_messages(
     session_id: str,
@@ -471,8 +462,7 @@ async def build_partitioned_messages(
     b_rounds_count = len(b_round_groups)
     
     rotation_count = 0
-    max_rotations = CACHE_MAX_ROTATIONS if CACHE_PARTITION_TRIGGER == "time" else 999
-    while _should_rotate(b_rounds_count, X, a_msgs) and rotation_count < max_rotations:
+    while _should_rotate(b_rounds_count, X, a_msgs):
         rotation_count += 1
         trigger_info = f"B区{b_rounds_count}轮 >= X={X}" if CACHE_PARTITION_TRIGGER != "time" else f"A区首条消息超出{CACHE_PARTITION_WINDOW}分钟窗口"
         print(f"🔄 轮转#{rotation_count}: session={session_id}, {trigger_info}")
