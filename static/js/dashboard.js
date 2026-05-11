@@ -1831,8 +1831,8 @@ let _modelList = [];
 // 所有需要读写的字段 key（开源版：EMBEDDING_API_KEY + EMBEDDING_BASE_URL）
 const _SETTINGS_FIELDS = {
     str: ['API_BASE_URL', 'API_KEY', 'DEFAULT_MODEL', 'MEMORY_MODEL',
-          'CACHE_SUMMARY_MODEL', 'EMBEDDING_API_KEY', 'EMBEDDING_BASE_URL', 'EMBEDDING_MODEL', 'REASONING_EFFORT'],
-    int: ['MAX_MEMORIES_INJECT', 'MEMORY_EXTRACT_INTERVAL', 'CACHE_PARTITION_X', 'EMBEDDING_DIM'],
+          'CACHE_SUMMARY_MODEL', 'CACHE_PARTITION_TRIGGER', 'EMBEDDING_API_KEY', 'EMBEDDING_BASE_URL', 'EMBEDDING_MODEL', 'REASONING_EFFORT'],
+    int: ['MAX_MEMORIES_INJECT', 'MEMORY_EXTRACT_INTERVAL', 'CACHE_PARTITION_X', 'CACHE_PARTITION_WINDOW', 'EMBEDDING_DIM'],
     float: ['MIN_SCORE_THRESHOLD'],
     bool: ['MEMORY_ENABLED', 'CACHE_PARTITION_ENABLED', 'MEMORY_VECTOR_ENABLED', 'FORCE_STREAM'],
     range: ['MEMORY_HW_KEYWORD', 'MEMORY_HW_SEMANTIC', 'MEMORY_HW_IMPORTANCE',
@@ -1841,6 +1841,12 @@ const _SETTINGS_FIELDS = {
 };
 
 const _MODEL_COMBOS = ['DEFAULT_MODEL', 'MEMORY_MODEL', 'CACHE_SUMMARY_MODEL'];
+
+// 触发模式联动：time模式才显示时间窗口字段
+function _togglePartitionWindow(trigger) {
+    const el = document.getElementById('field-CACHE_PARTITION_WINDOW');
+    if (el) el.style.display = trigger === 'time' ? '' : 'none';
+}
 
 async function loadSettings() {
     try {
@@ -1888,6 +1894,14 @@ async function loadSettings() {
         // REASONING_EFFORT 下拉
         const reEl = document.getElementById('set-REASONING_EFFORT');
         if (reEl) reEl.value = s.REASONING_EFFORT || '';
+
+        // CACHE_PARTITION_TRIGGER 下拉 + 联动时间窗口字段
+        const triggerEl = document.getElementById('set-CACHE_PARTITION_TRIGGER');
+        if (triggerEl) {
+            triggerEl.value = s.CACHE_PARTITION_TRIGGER || 'rounds';
+            _togglePartitionWindow(triggerEl.value);
+            triggerEl.onchange = () => _togglePartitionWindow(triggerEl.value);
+        }
 
         // 加载模型列表（首次）
         if (!_settingsLoaded) loadModelList();
