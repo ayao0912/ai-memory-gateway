@@ -1578,7 +1578,7 @@ function renderThreadList(threads) {
                     <button class="btn btn-sm" onclick="renameThread('${t.session_id}')">改名</button>
                     <button class="btn btn-sm" onclick="openSummaryModal('${t.session_id}')">摘要</button>
                     ${!isActive ? `<button class="btn btn-sm btn-primary" onclick="switchThread('${t.session_id}')">切换到此</button>` : ''}
-                    ${!isActive ? `<button class="btn btn-sm" onclick="deleteThread('${t.session_id}')" style="color: var(--error);">删除</button>` : ''}
+                    ${!isActive ? `<button class="btn btn-sm" onclick="deleteThread('${t.session_id}', ${t.message_count || 0})" style="color: var(--error);">删除</button>` : ''}
                 </div>
             </div>
             <div style="color: var(--text-muted); font-size: 13px; line-height: 1.5;">
@@ -1677,8 +1677,14 @@ async function switchThread(sessionId) {
     }
 }
 
-async function deleteThread(sessionId) {
-    if (!confirm(`确定删除对话线「${sessionId}」吗？\n\n这只会删除对话线配置和摘要，已有的对话消息不受影响。`)) return;
+async function deleteThread(sessionId, messageCount) {
+    let msg;
+    if (messageCount > 0) {
+        msg = `⚠️ 对话线「${sessionId}」包含 ${messageCount} 条消息。\n\n删除后对话线配置和摘要将被移除，消息本身不受影响但会失去对话线归属。\n\n确定删除？`;
+    } else {
+        msg = `确定删除对话线「${sessionId}」吗？\n\n这只会删除对话线配置和摘要。`;
+    }
+    if (!confirm(msg)) return;
     
     try {
         const resp = await fetch('/api/partition/thread/' + encodeURIComponent(sessionId), { method: 'DELETE' });
